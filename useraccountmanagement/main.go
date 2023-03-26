@@ -9,9 +9,9 @@ import (
 
 func main() {
 
-	http.HandleFunc("/sign-up", routes.Signup)
-	http.HandleFunc("/change-password", routes.ChangePassowrd)
-	http.HandleFunc("/delete-account/", routes.DeleteAccount)
+	http.HandleFunc("/signup", routes.Signup)
+	http.HandleFunc("/changepassword", routes.ChangePassowrd)
+	http.HandleFunc("/deleteaccount/", routes.DeleteAccount)
 	http.HandleFunc("/login", routes.Login)
 	fmt.Println("SUccess")
 	http.ListenAndServe(":8000", nil)
