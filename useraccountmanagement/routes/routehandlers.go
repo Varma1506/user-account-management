@@ -69,7 +69,7 @@ func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 		var pass model.ChangePassowrdRequest
 		err = json.Unmarshal(body, &pass)
 		if err != nil {
-			services.BuildResponse(w, http.StatusBadRequest, "Error parsing request body", data)
+			services.BuildResponse(w, http.StatusInternalServerError, "Error parsing request body", data)
 			return
 		}
 
@@ -150,7 +150,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		err = json.Unmarshal(body, &login)
 		if err != nil {
-			services.BuildResponse(w, http.StatusBadRequest, "Error parsing request body", data)
+			services.BuildResponse(w, http.StatusInternalServerError, "Error parsing request body", data)
 			return
 		}
 		//Validate Input
