@@ -3,10 +3,10 @@ package dbconfig
 import (
 	"fmt"
 
-	model "github.com/varma1506/user-account-management/models"
+	model "github.com/Varma1506/user-account-management/model"
 )
 
-func InsertUserIntoDB(user model.User) error {
+func InsertUserIntoDB(user model.SignupRequest) error {
 	//creating db session
 	db := Connect()
 	defer db.Close()
