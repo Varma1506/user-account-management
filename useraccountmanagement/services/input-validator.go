@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"regexp"
 
 	model "github.com/Varma1506/user-account-management/model"
 )
@@ -11,6 +12,8 @@ func SignupRequestValidator(req model.SignupRequest) error {
 		return fmt.Errorf("Firstname/Lastname cannot be empty")
 	} else if req.Password == "" || req.Email == "" {
 		return fmt.Errorf("Password/Email cannot be empty")
+	} else if !isValidEmail(req.Email) {
+		return fmt.Errorf("Invalid Email")
 	} else if len(req.Password) < 8 {
 		return fmt.Errorf("password must be 8 or more characters long")
 	} else if req.ConfirmPassword != req.Password {
@@ -41,4 +44,15 @@ func LoginRequestValidator(req model.LoginRequest) error {
 		return fmt.Errorf("invalid/missing password")
 	}
 	return nil
+}
+
+func isValidEmail(email string) bool {
+	// Regular expression for validating an email address
+	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+
+	// Compile the regular expression
+	regex := regexp.MustCompile(pattern)
+
+	// Check if the email matches the pattern
+	return regex.MatchString(email)
 }
