@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"strings"
 
-	"../dbconfig"
-	"../model"
-	"../services"
+	dbconfig "github.com/Varma1506/user-account-management/dbconfig"
+	model "github.com/Varma1506/user-account-management/model"
+	services "github.com/Varma1506/user-account-management/services"
 )
 
 func Signup(w http.ResponseWriter, r *http.Request) {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"./routes"
+	routes "github.com/Varma1506/user-account-management/routes"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package services
 import (
 	"fmt"
 
-	"../model"
+	model "github.com/Varma1506/user-account-management/model"
 )
 
 func SignupRequestValidator(req model.SignupRequest) error {

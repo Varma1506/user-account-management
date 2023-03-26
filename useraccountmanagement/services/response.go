@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"../model"
+	model "github.com/Varma1506/user-account-management/model"
 )
 
 func BuildResponse(w http.ResponseWriter, code int, message string, data []model.User) {
