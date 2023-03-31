@@ -9,10 +9,10 @@ import (
 
 func SignupRequestValidator(req model.SignupRequest) error {
 	if req.Firstname == "" || req.Lastname == "" {
-		return fmt.Errorf("Firstname/Lastname cannot be empty")
-	} else if req.Password == "" || req.Email == "" {
-		return fmt.Errorf("Password/Email cannot be empty")
-	} else if !isValidEmail(req.Email) {
+		return fmt.Errorf("Invalid FirstName/LastName")
+	} else if req.Password == "" {
+		return fmt.Errorf("Invalid Password")
+	} else if req.Email == "" || !isValidEmail(req.Email) {
 		return fmt.Errorf("Invalid Email")
 	} else if len(req.Password) < 8 {
 		return fmt.Errorf("password must be 8 or more characters long")
@@ -28,11 +28,13 @@ func SignupRequestValidator(req model.SignupRequest) error {
 
 func ChangePassowrdRequestValidator(req model.ChangePassowrdRequest) error {
 	if req.Username == "" {
-		return fmt.Errorf("username cannot be empty")
+		return fmt.Errorf("Invalid Username")
 	} else if req.Currentpass == "" {
-		return fmt.Errorf("currentpass cannot be empty")
+		return fmt.Errorf("Invalid current password")
+	} else if req.NewPass == "" {
+		return fmt.Errorf("Invalid new password")
 	} else if req.NewPass == req.Currentpass {
-		return fmt.Errorf("new password shouldn't match with Old password")
+		return fmt.Errorf("New Password should not match with current password")
 	}
 	return nil
 }
