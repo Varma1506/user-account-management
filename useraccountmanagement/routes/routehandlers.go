@@ -61,7 +61,7 @@ func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPut {
 		//Get Info From Token
 		tokenString := r.Header.Get("Authorization")
-		tokenValidatorResponse, err := token.ValidateToken(tokenString)
+		tokenValidatorResponse, err := token.GetDataFromToken(tokenString)
 		if err != nil {
 			services.BuildResponse(w, http.StatusUnauthorized, err.Error(), data)
 			return
@@ -123,7 +123,7 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodDelete {
 		//Get Info From Token
 		tokenString := r.Header.Get("Authorization")
-		tokenValidatorResponse, err := token.ValidateToken(tokenString)
+		tokenValidatorResponse, err := token.GetDataFromToken(tokenString)
 		if err != nil {
 			services.BuildResponse(w, http.StatusUnauthorized, err.Error(), data)
 			return

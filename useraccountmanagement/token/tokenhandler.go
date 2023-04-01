@@ -24,8 +24,8 @@ func GenerateToken(username string) string {
 	return tokenString
 }
 
-// Validate the token
-func ValidateToken(tokenString string) (*model.TokenClaim, error) {
+// Get data from the token
+func GetDataFromToken(tokenString string) (*model.TokenClaim, error) {
 	claims := &model.TokenClaim{}
 	secretString := "userauthtestproject"
 	secretKey := []byte(secretString)
