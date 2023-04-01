@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -60,7 +59,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 	var data []model.User
 	if r.Method == http.MethodPut {
-		//Validate Token
+		//Get Info From Token
 		tokenString := r.Header.Get("Authorization")
 		tokenValidatorResponse, err := token.ValidateToken(tokenString)
 		if err != nil {
@@ -122,7 +121,7 @@ func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	var data []model.User
 	if r.Method == http.MethodDelete {
-		//Validate Token
+		//Get Info From Token
 		tokenString := r.Header.Get("Authorization")
 		tokenValidatorResponse, err := token.ValidateToken(tokenString)
 		if err != nil {
