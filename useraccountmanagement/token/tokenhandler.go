@@ -8,16 +8,21 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// get secret key
+func getSecretKey() []byte {
+	return []byte("userauthtestproject")
+}
+
 // generate token with username encoded
 func GenerateToken(username string) string {
-
-	secretString := "userauthtestproject"
+	secretKey := getSecretKey()
+	//Configure header and payload
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 		"exp":      time.Now().Add(time.Minute * 1).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(secretString))
+	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
 		return "error"
 	}
@@ -27,8 +32,7 @@ func GenerateToken(username string) string {
 // Get data from the token
 func GetDataFromToken(tokenString string) (*model.TokenClaim, error) {
 	claims := &model.TokenClaim{}
-	secretString := "userauthtestproject"
-	secretKey := []byte(secretString)
+	secretKey := getSecretKey()
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil

@@ -9,11 +9,14 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+func getSecretKey() []byte {
+	return []byte("userauthtestproject")
+}
+
 func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//Secret Keys
-		secretString := "userauthtestproject"
-		secretKey := []byte(secretString)
+		secretKey := getSecretKey()
 		tokenString := r.Header.Get("Authorization")
 
 		//Parse token
