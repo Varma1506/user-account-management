@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+	"time"
 
 	model "github.com/Varma1506/user-account-management/model"
 	"github.com/dgrijalva/jwt-go"
@@ -13,6 +14,7 @@ func GenerateToken(username string) string {
 	secretString := "userauthtestproject"
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
+		"exp":      time.Now().Add(time.Minute * 1).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(secretString))
@@ -23,24 +25,21 @@ func GenerateToken(username string) string {
 }
 
 // Validate the token
-func ValidateToken(tokenString string) (model.TokenClaim, error) {
+func ValidateToken(tokenString string) (*model.TokenClaim, error) {
 	claims := &model.TokenClaim{}
-	secretKey := "userauthtestproject"
+	secretString := "userauthtestproject"
+	secretKey := []byte(secretString)
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
 		return secretKey, nil
 	})
 
 	if err != nil {
-		return nil, err
+		return &model.TokenClaim{}, fmt.Errorf(err.Error())
 	}
 
-	if _, ok := token.Claims.(*model.TokenClaim); !ok && !token.Valid {
-		return nil, fmt.Errorf("token is invalid")
+	if token.Valid {
+		return claims, nil
 	}
-
-	return claims, nil
+	return &model.TokenClaim{}, fmt.Errorf("Invalid Token")
 }

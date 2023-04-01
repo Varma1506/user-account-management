@@ -9,6 +9,7 @@ import (
 	dbconfig "github.com/Varma1506/user-account-management/dbconfig"
 	model "github.com/Varma1506/user-account-management/model"
 	services "github.com/Varma1506/user-account-management/services"
+	token "github.com/Varma1506/user-account-management/token"
 )
 
 func Signup(w http.ResponseWriter, r *http.Request) {
@@ -59,6 +60,14 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 	var data []model.User
 	if r.Method == http.MethodPut {
+		//Validate Token
+		tokenString := r.Header.Get("Authorization")
+		tokenValidatorResponse, err := token.ValidateToken(tokenString)
+		if err != nil {
+			services.BuildResponse(w, http.StatusUnauthorized, err.Error(), data)
+			return
+		}
+
 		//Extract the request body
 		body, err := services.ExtractReqBody(r)
 		if err != nil {
@@ -70,6 +79,12 @@ func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 		err = json.Unmarshal(body, &pass)
 		if err != nil {
 			services.BuildResponse(w, http.StatusInternalServerError, "Error parsing request body", data)
+			return
+		}
+
+		//Check if username for the password change request matches with Logged User
+		if pass.Username != tokenValidatorResponse.Username {
+			services.BuildResponse(w, http.StatusUnauthorized, "User is not logged in", data)
 			return
 		}
 
@@ -105,14 +120,26 @@ func ChangePassowrd(w http.ResponseWriter, r *http.Request) {
 
 // Delete a account
 func DeleteAccount(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("This is hitted")
 	var data []model.User
 	if r.Method == http.MethodDelete {
+		//Validate Token
+		tokenString := r.Header.Get("Authorization")
+		tokenValidatorResponse, err := token.ValidateToken(tokenString)
+		if err != nil {
+			services.BuildResponse(w, http.StatusUnauthorized, err.Error(), data)
+			return
+		}
 
 		//Extract username from URI path
 		path := r.URL.Path
 		segments := strings.Split(path, "/")
 		username := segments[2]
+
+		//Check if username for the password change request matches with Logged User
+		if username != tokenValidatorResponse.Username {
+			services.BuildResponse(w, http.StatusUnauthorized, "User is not logged in", data)
+			return
+		}
 
 		//Check if the record exists
 		userFromDB := dbconfig.GetUserRecord(username)
@@ -122,7 +149,7 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//Delete record from DB
-		err := dbconfig.DeleteUserRecord(username)
+		err = dbconfig.DeleteUserRecord(username)
 		if err != nil {
 			services.BuildResponse(w, http.StatusInternalServerError, err.Error(), data)
 		}
@@ -137,7 +164,6 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 
 // login function
 func Login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("This is hit : ", r.Method)
 	var data []model.User
 	if r.Method == http.MethodPost {
 		var login model.LoginRequest
@@ -147,8 +173,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			services.BuildResponse(w, http.StatusBadRequest, err.Error(), data)
 			return
 		}
-
 		err = json.Unmarshal(body, &login)
+
 		if err != nil {
 			services.BuildResponse(w, http.StatusInternalServerError, "Error parsing request body", data)
 			return
@@ -171,8 +197,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		//Generate Token
+		tokenString := token.GenerateToken(login.Username)
+
 		//Success Response
-		services.BuildResponse(w, http.StatusOK, "Login successful", data)
+		services.BuildResponse(w, http.StatusOK, tokenString, data)
 
 	} else {
 		services.BuildResponse(w, http.StatusMethodNotAllowed, "Not a POST request", data)
