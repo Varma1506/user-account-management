@@ -182,6 +182,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		err = services.LoginRequestValidator(login)
 		if err != nil {
 			services.BuildResponse(w, http.StatusBadRequest, err.Error(), data)
+			return
 		}
 
 		//Check if user exists in DB
